@@ -10,7 +10,8 @@ import (
 
 // Lot decide member randomly and make slackAttachment.
 type Lot struct {
-	client *slack.Client
+	client          *slack.Client
+	messageTemplate MessageTemplate
 }
 
 // DrawLots decide member randomly and send message to slack.
@@ -21,7 +22,7 @@ func (l *Lot) DrawLots(channelID string, members []Member) error {
 	rand.Seed(time.Now().UnixNano())
 	winner := members[rand.Intn(len(members))]
 	attachment := slack.Attachment{
-		Text:       "",
+		Text:       fmt.Sprintf(l.messageTemplate.Choose, winner.Name),
 		Color:      "#42f46e",
 		CallbackID: "taskuji",
 		Actions: []slack.AttachmentAction{
@@ -39,7 +40,7 @@ func (l *Lot) DrawLots(channelID string, members []Member) error {
 				Style: "danger",
 			},
 		},
-		Title:  fmt.Sprintf("I choose you <@%s>! ", winner.ID),
+		Title:  l.messageTemplate.LotTitle,
 		Footer: "Push the Button",
 	}
 	textMsg := slack.MsgOptionText(fmt.Sprintf("<@%s>", winner.ID), false)

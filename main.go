@@ -20,6 +20,19 @@ type envConfig struct {
 
 	// VerificationToken is used to validate interactive messages from slack.
 	VerificationToken string `envconfig:"VERIFICATION_TOKEN" required:"true"`
+
+	WinnerResponded string `envconfig:"WINNER_RESPONDED" default:"Thank you:muscle:"`
+	OtherResponded  string `envconfig:"OTHER_RESPONDED" default:"Oh,Thank you! <@%s>:muscle:"`
+	Choose          string `envconfig:"CHOOSE" default:"I choose you <@%s>!"`
+	LotTitle        string `envconfig:"LOT_TITLE" default:""`
+}
+
+// MessageTemplate Template messages bot speak
+type MessageTemplate struct {
+	WinnerResponded string
+	OtherResponded  string
+	Choose          string
+	LotTitle        string
 }
 
 // Member to assign task
@@ -43,12 +56,18 @@ func _main(args []string) int {
 		log.Printf("[ERROR] Failed to process env var: %s", err)
 		return 1
 	}
+	messageTemplate := MessageTemplate{
+		WinnerResponded: env.WinnerResponded,
+		OtherResponded:  env.OtherResponded,
+		Choose:          env.Choose,
+		LotTitle:        env.LotTitle,
+	}
 
 	// Listening slack event and response
 	log.Printf("[INFO] Start slack event listening")
 	client := slack.New(env.BotToken)
 
-	lot := &Lot{client: client}
+	lot := &Lot{client: client, messageTemplate: messageTemplate}
 	memberCollector := &MemberCollector{client: client}
 
 	http.Handle("/interaction", interactionHandler{
@@ -56,6 +75,7 @@ func _main(args []string) int {
 		verificationToken: env.VerificationToken,
 		lot:               lot,
 		memberCollector:   memberCollector,
+		messageTemplate:   messageTemplate,
 	})
 
 	http.Handle("/event", eventHandler{

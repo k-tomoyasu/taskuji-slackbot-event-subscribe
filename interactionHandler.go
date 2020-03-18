@@ -17,6 +17,7 @@ type interactionHandler struct {
 	verificationToken string
 	lot               *Lot
 	memberCollector   *MemberCollector
+	messageTemplate   MessageTemplate
 }
 
 func (h interactionHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -60,12 +61,12 @@ func (h interactionHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 func (h interactionHandler) reply(action *slack.AttachmentAction, message slack.AttachmentActionCallback, w http.ResponseWriter) {
 	switch action.Name {
 	case actionAccept:
-		winnerReponsed := fmt.Sprintf("<@%s>", message.User.ID) == message.OriginalMessage.Text
+		winnerResponsed := fmt.Sprintf("<@%s>", message.User.ID) == message.OriginalMessage.Text
 		var value string
-		if winnerReponsed {
-			value = "Thank you:muscle:"
+		if winnerResponsed {
+			value = h.messageTemplate.WinnerResponded
 		} else {
-			value = fmt.Sprintf("Oh,Thank you! <@%s>:muscle:", message.User.ID)
+			value = fmt.Sprintf(h.messageTemplate.OtherResponded, message.User.ID)
 		}
 		message.OriginalMessage.Attachments[0].Footer = "Good Luck!"
 		responseMessage(w, message.OriginalMessage, "", value)
