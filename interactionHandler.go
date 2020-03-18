@@ -73,7 +73,14 @@ func (h interactionHandler) reply(action *slack.AttachmentAction, message slack.
 	case actionRepeat:
 		responseMessage(w, message.OriginalMessage, ":cry:", "")
 		members, _ := h.memberCollector.Collect(message.Channel.ID)
-		h.lot.DrawLots(message.Channel.ID, members)
+		targetMembers := make([]Member, 0)
+		// exclude member NG button pushed.
+		for _, member := range members {
+			if member.ID != message.User.ID {
+				targetMembers = append(targetMembers, member)
+			}
+		}
+		h.lot.DrawLots(message.Channel.ID, targetMembers)
 		return
 	default:
 		log.Printf("[ERROR] ]Invalid action was submitted: %s", action.Name)
