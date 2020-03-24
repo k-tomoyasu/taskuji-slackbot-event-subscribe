@@ -12,11 +12,16 @@ When `NG` button is pressed, bot nominate a member randomly again.
 
 ## Preparation in Slack
 -  [Create Slack App as internal integrations](https://api.slack.com/internal-integrations)
--  Select permission scopes `incoming-webhook`, `bot`
+-  Turn on `Bots`
 -  Turn on `Interactivity` and set `Request URL` : `{scheme}://{host}/interaction` 
 -  Turn on `Event Subscriptions`
     - Set `Request URL` : `{scheme}://{host}/event` 
     - Add `Subscribe to bot events` : `app_mention` 
+-  Add Permissions
+    - channels:read
+    - chat:write
+    - groups:read
+    - incoming-webhook
 -  Invite bot user to your channel.
 
 ## Run
