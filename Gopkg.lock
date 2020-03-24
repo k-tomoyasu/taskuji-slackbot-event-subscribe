@@ -18,14 +18,6 @@
   revision = "462fda1f11d8cad3660e52737b8beefd27acfb3f"
 
 [[projects]]
-  branch = "master"
-  digest = "1:926df425108cfefd0987db868c83e42bf8fd80e3bbcf43f5d7d5efd8a68104e0"
-  name = "github.com/nlopes/slack"
-  packages = ["."]
-  pruneopts = ""
-  revision = "107290b5bbaf3e634833346bb4ff389b1c782bc7"
-
-[[projects]]
   digest = "1:c45802472e0c06928cd997661f2af610accd85217023b1d5f6331bebce0671d3"
   name = "github.com/pkg/errors"
   packages = ["."]
@@ -35,32 +27,34 @@
 
 [[projects]]
   branch = "master"
+  digest = "1:57db4c5900d63157c3095dcd4b969f9424e93f05bd9345d20db553b179e268f3"
+  name = "github.com/seehuhn/mt19937"
+  packages = ["."]
+  pruneopts = ""
+  revision = "d07252b9f9df0ef5c7962d97b77ba058b572c624"
+
+[[projects]]
+  branch = "master"
   digest = "1:167ac27f12003b985a9cf09273fddd5c71d70de2bb8c0fd733afe715f97df6ff"
   name = "github.com/slack-go/slack"
   packages = [
     ".",
     "internal/errorsx",
     "internal/timex",
+    "slackevents",
     "slackutilsx",
   ]
   pruneopts = ""
   revision = "5c56cf17c6c314bfb57e0378fe4f4000a0b6354d"
-
-[[projects]]
-  branch = "master"
-  digest = "1:cf18df59978fa61823ae19ca67c1eded2077045f064812b204eeb3ee84e6466d"
-  name = "golang.org/x/net"
-  packages = ["websocket"]
-  pruneopts = ""
-  revision = "434ec0c7fe3742c984919a691b2018a6e9694425"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
   input-imports = [
     "github.com/kelseyhightower/envconfig",
-    "github.com/nlopes/slack",
+    "github.com/seehuhn/mt19937",
     "github.com/slack-go/slack",
+    "github.com/slack-go/slack/slackevents",
   ]
   solver-name = "gps-cdcl"
   solver-version = 1

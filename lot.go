@@ -5,6 +5,7 @@ import (
 	"math/rand"
 	"time"
 
+	"github.com/seehuhn/mt19937"
 	"github.com/slack-go/slack"
 )
 
@@ -19,8 +20,9 @@ func (l *Lot) DrawLots(channelID string, members []Member) error {
 	if len(members) == 0 {
 		return nil
 	}
-	rand.Seed(time.Now().UnixNano())
-	winner := members[rand.Intn(len(members))]
+	rng := rand.New(mt19937.New())
+	rng.Seed(time.Now().UnixNano())
+	winner := members[rng.Intn(len(members))]
 	attachment := slack.Attachment{
 		Text:       fmt.Sprintf(l.messageTemplate.Choose, winner.Name),
 		Color:      "#42f46e",

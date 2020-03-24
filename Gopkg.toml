@@ -56,3 +56,7 @@
 [[constraint]]
   branch = "master"
   name = "github.com/slack-go/slack"
+
+[[constraint]]
+branch = "master"
+name = "github.com/seehuhn/mt19937"
