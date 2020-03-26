@@ -21,6 +21,8 @@ type envConfig struct {
 	// VerificationToken is used to validate interactive messages from slack.
 	VerificationToken string `envconfig:"VERIFICATION_TOKEN" required:"true"`
 
+	SigningSecret string `envconfig:"SIGNING_SECRET" required:"true"`
+
 	WinnerResponded string `envconfig:"WINNER_RESPONDED" default:"Thank you:muscle:"`
 	OtherResponded  string `envconfig:"OTHER_RESPONDED" default:"Oh,Thank you! <@%s>:muscle:"`
 	Choose          string `envconfig:"CHOOSE" default:"I choose you <@%s>!"`
@@ -83,6 +85,13 @@ func _main(args []string) int {
 		verificationToken: env.VerificationToken,
 		lot:               lot,
 		memberCollector:   memberCollector,
+	})
+
+	http.Handle("/slash", slashHandler{
+		slackClient:     client,
+		signingSecret:   env.SigningSecret,
+		lot:             lot,
+		memberCollector: memberCollector,
 	})
 
 	log.Printf("[INFO] Server listening on :%s", env.Port)
