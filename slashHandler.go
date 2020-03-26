@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"regexp"
 	"strings"
 
 	"github.com/slack-go/slack"
@@ -59,20 +60,20 @@ func (h slashHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		log.Println(len(strings.Trim(s.Text, "")))
-
-		// r := regexp.MustCompile(`<@([^|>]+)`)
-		// idMatch := r.FindAllStringSubmatch(s.Text, -1)
-		// if !(len(idMatch) > 0 && len(idMatch[0]) > 1) {
-		// 	w.WriteHeader(http.StatusInternalServerError)
-		// 	return
-		// }
-		// ugID := idMatch[0][1]
-		// members, err := h.memberCollector.CollectByUserGroup(ugID, s.ChannelID)
-		// if err != nil {
-		// 	w.WriteHeader(http.StatusInternalServerError)
-		// 	return
-		// }
-		// h.lot.DrawLots(s.ChannelID, members)
+		log.Println(s.Text)
+		r := regexp.MustCompile(`\^([^|>]+)`)
+		idMatch := r.FindAllStringSubmatch(strings.Trim(s.Text, ""), -1)
+		if !(len(idMatch) > 0 && len(idMatch[0]) > 1) {
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+		ugID := idMatch[0][1]
+		members, err := h.memberCollector.CollectByUserGroup(ugID, s.ChannelID)
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+		h.lot.DrawLots(s.ChannelID, members)
 	default:
 		w.WriteHeader(http.StatusInternalServerError)
 		return

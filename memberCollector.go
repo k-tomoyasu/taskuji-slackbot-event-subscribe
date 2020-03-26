@@ -13,17 +13,12 @@ type MemberCollector struct {
 
 // Collect channnel members using slack api.
 func (c *MemberCollector) Collect(channelID string) ([]Member, error) {
-	chInfo, err := c.client.GetChannelInfo(channelID)
-	// err return when channel is private. Try GetGroupInfo.
+	members, err := c.fetchChannelMembers(channelID)
 	if err != nil {
-		grInfo, err := c.client.GetGroupInfo(channelID)
-		if err != nil {
-			log.Println(err)
-			return nil, err
-		}
-		return c.mapActiveMember(grInfo.Members)
+		log.Println(err)
+		return nil, err
 	}
-	return c.mapActiveMember(chInfo.Members)
+	return c.mapActiveMember(members)
 }
 
 // CollectByUserGroup collect usergroup members using slack api.
@@ -33,20 +28,38 @@ func (c *MemberCollector) CollectByUserGroup(userGroupID string, channelID strin
 		log.Println(err)
 		return nil, err
 	}
-	chInfo, err := c.client.GetChannelInfo(channelID)
+	log.Println(ugMembers)
+	chMembers, err := c.fetchChannelMembers(channelID)
+	log.Println(chMembers)
+	chMemberMap := make(map[string]string, len(chMembers))
+	for _, chMember := range chMembers {
+		chMemberMap[chMember] = chMember
+	}
 	if err != nil {
 		log.Println(err)
 		return nil, err
 	}
 	var members []string
 	for _, ugMember := range ugMembers {
-		for _, chMember := range chInfo.Members {
-			if ugMember == chMember {
-				members = append(members, ugMember)
-			}
+		if m, ok := chMemberMap[ugMember]; ok {
+			members = append(members, m)
 		}
 	}
 	return c.mapActiveMember(members)
+}
+
+func (c *MemberCollector) fetchChannelMembers(channelID string) ([]string, error) {
+	chInfo, err := c.client.GetChannelInfo(channelID)
+	// err return when channel is private. Try GetGroupInfo.
+	if err == nil {
+		return chInfo.Members, nil
+	}
+	grInfo, err := c.client.GetGroupInfo(channelID)
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+	return grInfo.Members, err
 }
 
 func (c *MemberCollector) mapActiveMember(members []string) ([]Member, error) {
