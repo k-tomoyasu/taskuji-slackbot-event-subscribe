@@ -13,7 +13,6 @@ type MemberCollector struct {
 
 // Collect channnel members using slack api.
 func (c *MemberCollector) Collect(channelID string) ([]Member, error) {
-	var members []Member
 	chInfo, err := c.client.GetChannelInfo(channelID)
 	// err return when channel is private. Try GetGroupInfo.
 	if err != nil {
@@ -22,24 +21,23 @@ func (c *MemberCollector) Collect(channelID string) ([]Member, error) {
 			log.Println(err)
 			return nil, err
 		}
-		for _, mem := range grInfo.Members {
-			user, _ := c.client.GetUserInfo(mem)
-			if !(user.IsBot || user.Deleted) {
-				members = append(members, Member{ID: user.ID, Name: user.Name})
-			}
+		return c.mapActiveMember(grInfo.Members)
+	}
+	return c.mapActiveMember(chInfo.Members)
+}
+
+func (c *MemberCollector) mapActiveMember(members []string) ([]Member, error) {
+	var activeMembers []Member
+	for _, mem := range members {
+		user, err := c.client.GetUserInfo(mem)
+		if err != nil {
+			log.Println(err)
+			return nil, err
 		}
-	} else {
-		for _, mem := range chInfo.Members {
-			user, err := c.client.GetUserInfo(mem)
-			if err != nil {
-				log.Println(err)
-				return nil, err
-			}
-			if !(user.IsBot || user.Deleted) {
-				members = append(members, Member{ID: user.ID, Name: user.Name})
-			}
+		if !(user.IsBot || user.Deleted) {
+			activeMembers = append(activeMembers, Member{ID: user.ID, Name: user.Name})
 		}
 	}
 
-	return members, nil
+	return activeMembers, nil
 }
