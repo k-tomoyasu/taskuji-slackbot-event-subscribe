@@ -28,9 +28,8 @@ func (c *MemberCollector) CollectByUserGroup(userGroupID string, channelID strin
 		log.Println(err)
 		return nil, err
 	}
-	log.Println(ugMembers)
+
 	chMembers, err := c.fetchChannelMembers(channelID)
-	log.Println(chMembers)
 	chMemberMap := make(map[string]string, len(chMembers))
 	for _, chMember := range chMembers {
 		chMemberMap[chMember] = chMember
@@ -39,6 +38,7 @@ func (c *MemberCollector) CollectByUserGroup(userGroupID string, channelID strin
 		log.Println(err)
 		return nil, err
 	}
+
 	var members []string
 	for _, ugMember := range ugMembers {
 		if m, ok := chMemberMap[ugMember]; ok {

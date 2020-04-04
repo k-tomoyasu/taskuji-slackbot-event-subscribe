@@ -53,24 +53,25 @@ func (h slashHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		if len(strings.Trim(s.Text, "")) == 0 {
 			members, err := h.memberCollector.Collect(s.ChannelID)
 			if err != nil {
-				w.WriteHeader(http.StatusInternalServerError)
+				w.Write([]byte("require invite bot to this channel if here is not public channel"))
 				return
 			}
 			h.lot.DrawLots(s.ChannelID, members)
 			return
 		}
+
 		log.Println(len(strings.Trim(s.Text, "")))
 		log.Println(s.Text)
 		r := regexp.MustCompile(`\^([^|>]+)`)
 		idMatch := r.FindAllStringSubmatch(strings.Trim(s.Text, ""), -1)
 		if !(len(idMatch) > 0 && len(idMatch[0]) > 1) {
-			w.WriteHeader(http.StatusInternalServerError)
+			w.Write([]byte("can not find usergroup.  This usually works: /gacha [@usergroup]"))
 			return
 		}
 		ugID := idMatch[0][1]
 		members, err := h.memberCollector.CollectByUserGroup(ugID, s.ChannelID)
 		if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
+			w.Write([]byte("require invite bot to this channel if here is not public channel"))
 			return
 		}
 		h.lot.DrawLots(s.ChannelID, members)
