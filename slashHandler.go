@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"io"
 	"io/ioutil"
 	"log"
@@ -60,10 +61,8 @@ func (h slashHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		log.Println(len(strings.Trim(s.Text, "")))
-		log.Println(s.Text)
-		r := regexp.MustCompile(`\^([^|>]+)`)
-		idMatch := r.FindAllStringSubmatch(strings.Trim(s.Text, ""), -1)
+		idReg := regexp.MustCompile(`\^([^|>]+)`)
+		idMatch := idReg.FindAllStringSubmatch(strings.Trim(s.Text, ""), -1)
 		if !(len(idMatch) > 0 && len(idMatch[0]) > 1) {
 			w.Write([]byte("can not find usergroup.  This usually works: /gacha [@usergroup]"))
 			return
@@ -74,6 +73,23 @@ func (h slashHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			w.Write([]byte("require invite bot to this channel if here is not public channel"))
 			return
 		}
+		groupNameReg := regexp.MustCompile(`@(.+)>`)
+		groupNameMatch := groupNameReg.FindAllStringSubmatch(strings.Trim(s.Text, ""), -1)
+		if !(len(groupNameMatch) > 0 && len(groupNameMatch[0]) > 1) {
+			w.Write([]byte("can not extract usergroup name.  This usually works: /gacha [@usergroup]"))
+			log.Print(s.Text)
+			return
+		}
+		groupName := groupNameMatch[0][1]
+		bodyReg := regexp.MustCompile(`>(.+)`)
+		bodyMatch := bodyReg.FindAllStringSubmatch(strings.Trim(s.Text, ""), -1)
+		if len(bodyMatch) > 0 && len(bodyMatch[0]) > 1 {
+			body := bodyMatch[0][1]
+			h.slackClient.PostMessage(s.ChannelID, slack.MsgOptionText(fmt.Sprintf("%s draw gacha @%s %s", s.UserName, groupName, body), true))
+		} else {
+			h.slackClient.PostMessage(s.ChannelID, slack.MsgOptionText(fmt.Sprintf("%s draw gacha @%s", s.UserName, groupName), true))
+		}
+
 		h.lot.DrawLots(s.ChannelID, members)
 	default:
 		w.WriteHeader(http.StatusInternalServerError)
