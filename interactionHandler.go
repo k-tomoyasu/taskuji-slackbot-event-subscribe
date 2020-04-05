@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -13,11 +14,11 @@ import (
 
 // interactionHandler handles interactive message response.
 type interactionHandler struct {
-	slackClient       *slack.Client
-	verificationToken string
-	lot               *Lot
-	memberCollector   *MemberCollector
-	messageTemplate   MessageTemplate
+	slackClient     *slack.Client
+	signingSecret   string
+	lot             *Lot
+	memberCollector *MemberCollector
+	messageTemplate MessageTemplate
 }
 
 func (h interactionHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -27,6 +28,15 @@ func (h interactionHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Only accept message when verification success
+	verifier, err := slack.NewSecretsVerifier(r.Header, h.signingSecret)
+	if err != nil {
+		log.Println(err)
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+
+	r.Body = ioutil.NopCloser(io.TeeReader(r.Body, &verifier))
 	buf, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		log.Printf("[ERROR] Failed to read request body: %s", err)
@@ -48,12 +58,6 @@ func (h interactionHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Only accept message from slack with valid token
-	if message.Token != h.verificationToken {
-		log.Printf("[ERROR] Invalid token: %s", message.Token)
-		w.WriteHeader(http.StatusUnauthorized)
-		return
-	}
 	action := message.ActionCallback.AttachmentActions[0]
 	h.reply(action, message, w)
 }

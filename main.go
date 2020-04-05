@@ -73,11 +73,11 @@ func _main(args []string) int {
 	memberCollector := &MemberCollector{client: client}
 
 	http.Handle("/interaction", interactionHandler{
-		slackClient:       client,
-		verificationToken: env.VerificationToken,
-		lot:               lot,
-		memberCollector:   memberCollector,
-		messageTemplate:   messageTemplate,
+		slackClient:     client,
+		signingSecret:   env.SigningSecret,
+		lot:             lot,
+		memberCollector: memberCollector,
+		messageTemplate: messageTemplate,
 	})
 
 	http.Handle("/event", eventHandler{

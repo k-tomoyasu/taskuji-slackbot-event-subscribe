@@ -30,6 +30,7 @@ To run this bot, you need to set the following env vars,
 ```bash
 export BOT_TOKEN="xoxb-***"      // you can get this after create a bot user (via slack app management console)
 export VERIFICATION_TOKEN="***"  // you can get this after enable interactive message (via slack app management console)
+export SIGNING_SECRET="***"  // you can get this after enable interactive message (via slack app management console)
 ```
 
 To run this, 
