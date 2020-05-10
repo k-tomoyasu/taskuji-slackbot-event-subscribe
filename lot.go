@@ -16,7 +16,7 @@ type Lot struct {
 }
 
 // DrawLots decide member randomly and send message to slack.
-func (l *Lot) DrawLots(channelID string, members []Member) error {
+func (l *Lot) DrawLots(channelID string, members []Member, userGroupID string) error {
 	if len(members) == 0 {
 		return nil
 	}
@@ -40,6 +40,7 @@ func (l *Lot) DrawLots(channelID string, members []Member) error {
 				Text:  "NG:cry:",
 				Type:  "button",
 				Style: "danger",
+				Value: userGroupID,
 			},
 		},
 		Title:  l.messageTemplate.LotTitle,

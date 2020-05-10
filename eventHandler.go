@@ -50,7 +50,7 @@ func (h eventHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			if err != nil {
 				log.Printf("[ERROR] Failed to collect member request: %s", err)
 			}
-			h.lot.DrawLots(ev.Channel, members)
+			h.lot.DrawLots(ev.Channel, members, "")
 		}
 	}
 }
