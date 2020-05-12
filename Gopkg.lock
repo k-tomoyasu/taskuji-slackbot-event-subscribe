@@ -2,20 +2,20 @@
 
 
 [[projects]]
-  digest = "1:03168f6041f164c06dc6acaaab4ed3ad1c6088b717c365cec892b35c80f4ffc7"
+  digest = "1:5122b0b5a933bd0e16b887aa7844933c8a09fb5ba9b5f5651253cb5336c6462a"
   name = "github.com/gorilla/websocket"
   packages = ["."]
   pruneopts = ""
-  revision = "c3e18be99d19e6b3e8f1559eea2c161a665c4b6b"
-  version = "v1.4.1"
+  revision = "b65e62901fc1c0d968042419e74789f6af455eb9"
+  version = "v1.4.2"
 
 [[projects]]
   branch = "master"
-  digest = "1:f2f7d256ef5dba3ed9e22910b5810fb9c603045d1cc65b32d51156c92f50fc2b"
+  digest = "1:0536e7642a38c1683743ce8f1f6d83d9b3fc591a6cd911762f539283faec4132"
   name = "github.com/kelseyhightower/envconfig"
   packages = ["."]
   pruneopts = ""
-  revision = "462fda1f11d8cad3660e52737b8beefd27acfb3f"
+  revision = "0b417c4ec4a8a82eecc22a1459a504aa55163d61"
 
 [[projects]]
   digest = "1:c45802472e0c06928cd997661f2af610accd85217023b1d5f6331bebce0671d3"
@@ -35,7 +35,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:167ac27f12003b985a9cf09273fddd5c71d70de2bb8c0fd733afe715f97df6ff"
+  digest = "1:4a64bcc91958882bb207b8c4b923da650a5b4e90793a64bfcc96aabf6c6af24c"
   name = "github.com/slack-go/slack"
   packages = [
     ".",
@@ -45,7 +45,7 @@
     "slackutilsx",
   ]
   pruneopts = ""
-  revision = "5c56cf17c6c314bfb57e0378fe4f4000a0b6354d"
+  revision = "0f98367f9203d7a46c304e08ef500da915e5e3ae"
 
 [solve-meta]
   analyzer-name = "dep"
