@@ -13,12 +13,6 @@ const (
 	actionRepeat = "repeat"
 )
 
-const (
-	// action type is used for slack attament action.
-	repeatChannel = "repeatChannel"
-	repeatGroup   = "repeatGroup"
-)
-
 // responseMessage response to the original slackbutton enabled message.
 // It removes button and replace it with message which indicate how bot will work
 func responseMessage(w http.ResponseWriter, original slack.Message, title, value string) {
