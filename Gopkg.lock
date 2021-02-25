@@ -11,11 +11,11 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:0536e7642a38c1683743ce8f1f6d83d9b3fc591a6cd911762f539283faec4132"
+  digest = "1:4987b0f81f0aded90a6592e8e47051e4c76ddf860c815839c8ba3605b2025a10"
   name = "github.com/kelseyhightower/envconfig"
   packages = ["."]
   pruneopts = ""
-  revision = "0b417c4ec4a8a82eecc22a1459a504aa55163d61"
+  revision = "c974cae29cf5b543b30f7ba91f8ce9649cd69818"
 
 [[projects]]
   digest = "1:c45802472e0c06928cd997661f2af610accd85217023b1d5f6331bebce0671d3"
@@ -27,25 +27,27 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:57db4c5900d63157c3095dcd4b969f9424e93f05bd9345d20db553b179e268f3"
+  digest = "1:43bd92e60aa3753c1d1d94c678f2f4d3349f263d3535cd6b450fd79735e8da1b"
   name = "github.com/seehuhn/mt19937"
   packages = ["."]
   pruneopts = ""
-  revision = "d07252b9f9df0ef5c7962d97b77ba058b572c624"
+  revision = "c71303bb1995a2eadfdc1956136a55e06790913a"
 
 [[projects]]
   branch = "master"
-  digest = "1:4a64bcc91958882bb207b8c4b923da650a5b4e90793a64bfcc96aabf6c6af24c"
+  digest = "1:568e0c889735c83b4792bcbbc51cb2ac53a7c0efa1942cfad1337c4acd22c99f"
   name = "github.com/slack-go/slack"
   packages = [
     ".",
+    "internal/backoff",
     "internal/errorsx",
+    "internal/misc",
     "internal/timex",
     "slackevents",
     "slackutilsx",
   ]
   pruneopts = ""
-  revision = "0f98367f9203d7a46c304e08ef500da915e5e3ae"
+  revision = "bf8fbd57a52941ee9eb35653eca7bd39a9877fe6"
 
 [solve-meta]
   analyzer-name = "dep"

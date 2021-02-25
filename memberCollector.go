@@ -13,7 +13,7 @@ type MemberCollector struct {
 
 // Collect channnel members using slack api.
 func (c *MemberCollector) Collect(channelID string) ([]Member, error) {
-	members, err := c.fetchChannelMembers(channelID)
+	members, err := c.fetchConversationMembers(channelID)
 	if err != nil {
 		log.Println(err)
 		return nil, err
@@ -29,7 +29,7 @@ func (c *MemberCollector) CollectByUserGroup(userGroupID string, channelID strin
 		return nil, err
 	}
 
-	chMembers, err := c.fetchChannelMembers(channelID)
+	chMembers, err := c.fetchConversationMembers(channelID)
 	chMemberMap := make(map[string]string, len(chMembers))
 	for _, chMember := range chMembers {
 		chMemberMap[chMember] = chMember
@@ -48,18 +48,28 @@ func (c *MemberCollector) CollectByUserGroup(userGroupID string, channelID strin
 	return c.mapActiveMember(members)
 }
 
-func (c *MemberCollector) fetchChannelMembers(channelID string) ([]string, error) {
-	chInfo, err := c.client.GetChannelInfo(channelID)
-	// err return when channel is private. Try GetGroupInfo.
-	if err == nil {
-		return chInfo.Members, nil
+func (c *MemberCollector) fetchConversationMembers(channelID string) ([]string, error) {
+	nextCursor := ""
+	params := slack.GetUsersInConversationParameters{
+		ChannelID: channelID,
+		Cursor:    nextCursor,
 	}
-	grInfo, err := c.client.GetGroupInfo(channelID)
+	var members []string
+	fetchedMembers, nextCursor, err := c.client.GetUsersInConversation(&params)
 	if err != nil {
 		log.Println(err)
 		return nil, err
 	}
-	return grInfo.Members, err
+	members = append(members, fetchedMembers...)
+	for len(nextCursor) > 0 {
+		fetchedMembers, nextCursor, err = c.client.GetUsersInConversation(&params)
+		if err != nil {
+			log.Println(err)
+			return nil, err
+		}
+		members = append(members, fetchedMembers...)
+	}
+	return members, err
 }
 
 func (c *MemberCollector) mapActiveMember(members []string) ([]Member, error) {
