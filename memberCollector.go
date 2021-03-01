@@ -18,7 +18,7 @@ func (c *MemberCollector) Collect(channelID string) ([]Member, error) {
 		log.Println(err)
 		return nil, err
 	}
-	return c.mapActiveMember(members)
+	return c.filterActiveMember(members)
 }
 
 // CollectByUserGroup collect usergroup members using slack api.
@@ -45,7 +45,7 @@ func (c *MemberCollector) CollectByUserGroup(userGroupID string, channelID strin
 			members = append(members, m)
 		}
 	}
-	return c.mapActiveMember(members)
+	return c.filterActiveMember(members)
 }
 
 func (c *MemberCollector) fetchConversationMembers(channelID string) ([]string, error) {
@@ -72,7 +72,7 @@ func (c *MemberCollector) fetchConversationMembers(channelID string) ([]string, 
 	return members, err
 }
 
-func (c *MemberCollector) mapActiveMember(members []string) ([]Member, error) {
+func (c *MemberCollector) filterActiveMember(members []string) ([]Member, error) {
 	var activeMembers []Member
 	for _, mem := range members {
 		user, err := c.client.GetUserInfo(mem)
